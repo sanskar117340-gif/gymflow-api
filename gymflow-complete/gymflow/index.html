@@ -1,0 +1,628 @@
+cat > /home/claude/gymflow-frontend/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GymFlow AI | The Future of Performance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "surface-variant": "#353534","surface-container-lowest": "#0e0e0e","on-tertiary-fixed": "#1c1b1b","secondary-fixed": "#7df4ff","surface-container-high": "#2a2a2a","surface-container-highest": "#353534","secondary-fixed-dim": "#00dbe9","inverse-surface": "#e5e2e1","surface-bright": "#3a3939","tertiary": "#ffffff","on-error-container": "#ffdad6","surface": "#131313","surface-container": "#201f1f","on-error": "#690005","on-primary": "#283500","primary": "#ffffff","tertiary-container": "#e5e2e1","inverse-on-surface": "#313030","primary-fixed-dim": "#abd600","tertiary-fixed-dim": "#c8c6c5","primary-container": "#c3f400","error-container": "#93000a","on-tertiary": "#313030","surface-tint": "#abd600","on-surface-variant": "#c4c9ac","on-background": "#e5e2e1","on-secondary-container": "#00686f","on-secondary-fixed-variant": "#004f54","secondary": "#d3fbff","primary-fixed": "#c3f400","background": "#131313","on-secondary": "#00363a","surface-dim": "#131313","on-primary-fixed-variant": "#3c4d00","inverse-primary": "#506600","secondary-container": "#00eefc","on-tertiary-fixed-variant": "#474746","error": "#ffb4ab","on-primary-container": "#556d00","on-surface": "#e5e2e1","on-primary-fixed": "#161e00","on-secondary-fixed": "#002022","outline": "#8e9379","outline-variant": "#444933","surface-container-low": "#1c1b1b","on-tertiary-container": "#656464","tertiary-fixed": "#e5e2e1"
+        },
+        borderRadius: {"DEFAULT": "1rem","lg": "2rem","xl": "3rem","full": "9999px"},
+        spacing: {"container-padding": "24px","stack-sm": "8px","gutter": "16px","unit": "8px","stack-lg": "32px","stack-md": "16px","section-gap": "64px"},
+        fontFamily: {"headline-md": ["Geist"],"display-lg-mobile": ["Geist"],"data-mono": ["Geist"],"headline-lg": ["Geist"],"display-lg": ["Geist"],"body-lg": ["Inter"],"body-md": ["Inter"],"label-bold": ["Geist"]},
+        fontSize: {"headline-md": ["24px",{"lineHeight":"1.3","fontWeight":"600"}],"display-lg-mobile": ["40px",{"lineHeight":"1.1","letterSpacing":"-0.02em","fontWeight":"800"}],"data-mono": ["20px",{"lineHeight":"1","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-lg": ["32px",{"lineHeight":"1.2","letterSpacing":"-0.02em","fontWeight":"700"}],"display-lg": ["64px",{"lineHeight":"1.1","letterSpacing":"-0.04em","fontWeight":"800"}],"body-lg": ["18px",{"lineHeight":"1.6","fontWeight":"400"}],"body-md": ["16px",{"lineHeight":"1.6","fontWeight":"400"}],"label-bold": ["14px",{"lineHeight":"1.2","letterSpacing":"0.1em","fontWeight":"700"}]}
+      }
+    }
+  }
+</script>
+<style>
+  /* ── API Config ── */
+  :root { --api-url: 'https://gymflow-api-c6ij.onrender.com'; }
+
+  .glass-panel { backdrop-filter:blur(20px); background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); }
+  .hero-gradient { background:linear-gradient(to bottom,rgba(5,5,5,0.4) 0%,rgba(19,19,19,1) 100%); }
+  .kinetic-glow:hover { box-shadow:0 0 25px rgba(171,214,0,0.2); }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .active-indicator { box-shadow:0 0 15px rgba(171,214,0,0.4); }
+  .progress-segment { transition:width 0.4s ease; }
+
+  /* ── Page System ── */
+  .page { display:none; }
+  .page.active { display:block; }
+  .page-flex { display:none; }
+  .page-flex.active { display:flex; }
+
+  /* ── Toast ── */
+  #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; display:none; }
+  #toast.show { display:block; animation:slideUp 0.3s ease; }
+  @keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+</style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
+
+<!-- ── TOAST ── -->
+<div id="toast" class="glass-panel px-6 py-3 rounded-full text-sm font-label-bold"></div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 1: LANDING / HERO
+═══════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+  <!-- Nav -->
+  <header class="w-full sticky top-0 z-50 bg-surface/30 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(171,214,0,0.05)]">
+    <div class="flex justify-between items-center px-container-padding py-4 w-full max-w-7xl mx-auto">
+      <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-primary-fixed-dim text-3xl" style="font-variation-settings:'FILL' 1">fitness_center</span>
+        <span class="font-headline-lg text-headline-lg font-extrabold text-primary tracking-tighter">GymFlow AI</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-8">
+        <a class="text-primary font-bold border-b-2 border-primary font-label-bold text-label-bold" href="#">Home</a>
+        <a class="text-on-surface-variant font-label-bold text-label-bold hover:text-primary transition-colors" href="#">Features</a>
+        <a class="text-on-surface-variant font-label-bold text-label-bold hover:text-primary transition-colors" href="#">For Gyms</a>
+      </nav>
+      <div class="flex items-center gap-4">
+        <button onclick="showPage('login')" class="text-on-surface-variant font-label-bold text-label-bold hover:text-primary transition-colors">LOGIN</button>
+        <button onclick="showPage('onboarding')" class="bg-primary-container text-on-primary-container font-label-bold text-label-bold px-6 py-2.5 rounded-full active:scale-95 transition-transform">JOIN NOW</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute inset-0 hero-gradient z-10"></div>
+      <img class="w-full h-full object-cover grayscale opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsDmGMuCrDz7hxKcT_S5AjOAYbiBH33LbD-vCXV3pEemEJqk2BrsuntW4fUs1oKJf92Q6t56DShADLMkF4kjwCUjMOSiXJwm_vYVoZjdFMPk1jV4z75k1zcPsIWlRGSiuM3fLJsMa_uaSqhvYhjF9e9-iTJotE5Rb03S1EE__erH1pV2qNHp-O3AeJOgKb9MRTkui4HF3sFj8zbkx1je0tW5JDRiu6Kq-0bq0SSdmaExPCMg9cLf8HmpuTlkS2EB8aJjijLYGJ41M"/>
+    </div>
+    <div class="relative z-20 text-center px-container-padding max-w-5xl">
+      <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary-fixed-dim mb-stack-md leading-none tracking-tighter">THE FUTURE OF PERFORMANCE</h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-stack-lg">Elite performance meets artificial intelligence. Elevate your physical potential with data-driven precision.</p>
+      <div class="flex flex-col sm:flex-row gap-gutter justify-center items-center">
+        <button onclick="showPage('onboarding')" class="glass-panel text-primary font-label-bold text-label-bold px-10 py-5 rounded-full kinetic-glow hover:bg-white/5 transition-all w-full sm:w-auto">JOIN THE ELITE</button>
+        <button onclick="showPage('login')" class="flex items-center gap-2 text-primary font-label-bold text-label-bold hover:opacity-70 transition-opacity">
+          <span class="material-symbols-outlined">play_circle</span>LOGIN TO DASHBOARD
+        </button>
+      </div>
+    </div>
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-gutter z-20 px-container-padding">
+      <div class="glass-panel p-4 rounded-xl text-center"><div class="font-data-mono text-data-mono text-primary-fixed-dim">98.4%</div><div class="font-label-bold text-[10px] text-on-surface-variant uppercase tracking-widest">Accuracy</div></div>
+      <div class="glass-panel p-4 rounded-xl text-center"><div class="font-data-mono text-data-mono text-primary-fixed-dim">1.2M+</div><div class="font-label-bold text-[10px] text-on-surface-variant uppercase tracking-widest">Workouts</div></div>
+      <div class="glass-panel p-4 rounded-xl text-center"><div class="font-data-mono text-data-mono text-primary-fixed-dim">Elite</div><div class="font-label-bold text-[10px] text-on-surface-variant uppercase tracking-widest">Status</div></div>
+      <div class="glass-panel p-4 rounded-xl text-center"><div class="font-data-mono text-data-mono text-primary-fixed-dim">Realtime</div><div class="font-label-bold text-[10px] text-on-surface-variant uppercase tracking-widest">Biometrics</div></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-section-gap px-container-padding max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+      <div class="glass-panel rounded-lg p-stack-lg hover:border-primary-fixed-dim transition-colors cursor-pointer" onclick="showPage('dashboard')">
+        <span class="material-symbols-outlined text-primary-fixed-dim mb-4" style="font-size:32px">dashboard</span>
+        <h3 class="font-headline-md text-headline-md text-primary mb-2">Smart Dashboard</h3>
+        <p class="text-on-surface-variant text-sm">Real-time performance analytics and personalized insights at your fingertips.</p>
+      </div>
+      <div class="glass-panel rounded-lg p-stack-lg hover:border-secondary-fixed-dim transition-colors cursor-pointer" onclick="showPage('workout')">
+        <span class="material-symbols-outlined text-secondary-fixed-dim mb-4" style="font-size:32px">fitness_center</span>
+        <h3 class="font-headline-md text-headline-md text-primary mb-2">Workout Library</h3>
+        <p class="text-on-surface-variant text-sm">10,000+ exercises with AI-powered form correction and adaptive programming.</p>
+      </div>
+      <div class="glass-panel rounded-lg p-stack-lg hover:border-primary-fixed-dim transition-colors cursor-pointer" onclick="showPage('analytics')">
+        <span class="material-symbols-outlined text-primary-fixed-dim mb-4" style="font-size:32px">insights</span>
+        <h3 class="font-headline-md text-headline-md text-primary mb-2">Deep Analytics</h3>
+        <p class="text-on-surface-variant text-sm">Track every metric that matters. Volume, intensity, recovery, and more.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 2: LOGIN
+═══════════════════════════════════════════ -->
+<div id="page-login" class="page min-h-screen flex items-center justify-center px-container-padding relative overflow-hidden">
+  <div class="fixed inset-0 z-0"><div class="absolute inset-0 bg-black/70 z-10"></div><img class="w-full h-full object-cover grayscale opacity-30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsDmGMuCrDz7hxKcT_S5AjOAYbiBH33LbD-vCXV3pEemEJqk2BrsuntW4fUs1oKJf92Q6t56DShADLMkF4kjwCUjMOSiXJwm_vYVoZjdFMPk1jV4z75k1zcPsIWlRGSiuM3fLJsMa_uaSqhvYhjF9e9-iTJotE5Rb03S1EE__erH1pV2qNHp-O3AeJOgKb9MRTkui4HF3sFj8zbkx1je0tW5JDRiu6Kq-0bq0SSdmaExPCMg9cLf8HmpuTlkS2EB8aJjijLYGJ41M"/></div>
+  <div class="relative z-20 w-full max-w-md">
+    <div class="glass-panel rounded-xl p-stack-lg shadow-2xl">
+      <div class="text-center mb-stack-lg">
+        <span class="material-symbols-outlined text-primary-fixed-dim text-4xl mb-2" style="font-variation-settings:'FILL' 1">fitness_center</span>
+        <h1 class="font-headline-lg text-headline-lg text-primary font-extrabold tracking-tighter">GymFlow AI</h1>
+        <p class="text-on-surface-variant text-sm mt-1">Elite Performance Platform</p>
+      </div>
+      <div class="space-y-stack-md">
+        <div>
+          <label class="block font-label-bold text-label-bold text-on-surface-variant mb-2">Email</label>
+          <input id="login-email" type="email" placeholder="athlete@gymflow.ai" class="w-full bg-white/5 border border-white/10 rounded-lg px-gutter py-4 focus:ring-2 focus:ring-primary-fixed-dim outline-none transition-all placeholder:text-white/20"/>
+        </div>
+        <div>
+          <label class="block font-label-bold text-label-bold text-on-surface-variant mb-2">Password</label>
+          <input id="login-password" type="password" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-lg px-gutter py-4 focus:ring-2 focus:ring-primary-fixed-dim outline-none transition-all placeholder:text-white/20"/>
+        </div>
+        <button onclick="doLogin()" class="w-full bg-primary-container text-on-primary-container font-label-bold text-label-bold py-4 rounded-xl active:scale-95 transition-transform text-center">LOGIN</button>
+        <div class="text-center text-on-surface-variant text-sm">
+          Don't have an account? <button onclick="showPage('onboarding')" class="text-primary-fixed-dim font-bold hover:underline">Join now</button>
+        </div>
+        <button onclick="showPage('landing')" class="w-full text-on-surface-variant text-sm hover:text-primary transition-colors text-center">← Back to Home</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 3: ONBOARDING / REGISTER
+═══════════════════════════════════════════ -->
+<div id="page-onboarding" class="page min-h-screen flex flex-col items-center justify-center relative px-container-padding overflow-hidden">
+  <div class="fixed inset-0 z-[-1]"><div class="absolute inset-0 bg-black/60 z-10"></div><img class="w-full h-full object-cover grayscale opacity-40 scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgrAXp841Z1_-CiBRelg6eBur8iuBKoCXZdsFFbQoUDalB3JrDhrFYnaGCublOQ7c8dGA6Vz53E4qlinxgOrmihYUWKuDcM0ZenhZ5bVAOyAScLWjGQRi4VlS5zlv2fHA_tj9msDKTFZj3KZhgLrvqWwQAtsXt4tvdWziwqFJox4-WbTUzfhND-ZQyENNYYH8WaI7ubeKPNNcEKmnj4y7jHlVmuuNaJta8OdcohETTmmTiEOHTqVoBQBBem9u-rYmH8Pbyiyyma28"/></div>
+  <header class="absolute top-0 w-full flex justify-center py-stack-lg z-50">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary-fixed text-4xl" style="font-variation-settings:'FILL' 1">fitness_center</span>
+      <h1 class="font-headline-lg text-headline-lg font-extrabold text-primary tracking-tighter">GymFlow AI</h1>
+    </div>
+  </header>
+  <main class="w-full max-w-2xl z-20 mt-20">
+    <div class="glass-panel rounded-xl p-stack-lg shadow-2xl">
+      <div class="mb-section-gap">
+        <div class="flex justify-between items-end mb-stack-sm">
+          <div><p class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-widest" id="step-count">Step 1 of 3</p><h2 class="font-headline-md text-headline-md text-primary mt-1" id="step-title">Personal Details</h2></div>
+          <span class="font-data-mono text-data-mono text-primary-fixed" id="progress-pct">33%</span>
+        </div>
+        <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden"><div class="progress-segment h-full bg-primary-fixed-dim" id="progress-bar" style="width:33%"></div></div>
+      </div>
+      <!-- Step 1 -->
+      <div id="ob-step-1" class="space-y-stack-md">
+        <div><label class="block font-label-bold text-label-bold text-on-surface-variant mb-2">First Name</label><input id="reg-first" type="text" placeholder="Alex" class="w-full bg-white/5 border border-white/10 rounded-lg px-gutter py-4 focus:ring-2 focus:ring-primary-fixed-dim outline-none transition-all placeholder:text-white/20"/></div>
+        <div><label class="block font-label-bold text-label-bold text-on-surface-variant mb-2">Last Name</label><input id="reg-last" type="text" placeholder="Performance" class="w-full bg-white/5 border border-white/10 rounded-lg px-gutter py-4 focus:ring-2 focus:ring-primary-fixed-dim outline-none transition-all placeholder:text-white/20"/></div>
+        <div><label class="block font-label-bold text-label-bold text-on-surface-variant mb-2">Email</label><input id="reg-email" type="email" placeholder="you@gymflow.ai" class="w-full bg-white/5 border border-white/10 rounded-lg px-gutter py-4 focus:ring-2 focus:ring-primary-fixed-dim outline-none transition-all placeholder:text-white/20"/></div>
+        <button onclick="obNext(1)" class="w-full bg-primary-container text-on-primary-container font-label-bold py-4 rounded-xl active:scale-95 transition-transform">Continue</button>
+      </div>
+      <!-- Step 2 -->
+      <div id="ob-step-2" class="space-y-stack-md hidden">
+        <div><label class="block font-label-bold text-label-bold text-on-surface-variant mb-2">Password</label><input id="reg-pass" type="password" placeholder="Min 8 characters" class="w-full bg-white/5 border border-white/10 rounded-lg px-gutter py-4 focus:ring-2 focus:ring-primary-fixed-dim outline-none transition-all placeholder:text-white/20"/></div>
+        <div><label class="block font-label-bold text-label-bold text-on-surface-variant mb-2">Fitness Level</label>
+          <select id="reg-level" class="w-full bg-surface border border-white/10 rounded-lg px-gutter py-4 focus:ring-2 focus:ring-primary-fixed-dim outline-none text-on-surface">
+            <option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option>
+          </select>
+        </div>
+        <button onclick="obNext(2)" class="w-full bg-primary-container text-on-primary-container font-label-bold py-4 rounded-xl active:scale-95 transition-transform">Continue</button>
+        <button onclick="obBack(2)" class="w-full text-on-surface-variant text-sm hover:text-primary transition-colors">← Back</button>
+      </div>
+      <!-- Step 3 -->
+      <div id="ob-step-3" class="space-y-stack-md hidden">
+        <p class="text-on-surface-variant">Select your primary fitness goals:</p>
+        <div class="grid grid-cols-2 gap-3" id="goals-grid">
+          <label class="glass-panel p-3 rounded-lg cursor-pointer hover:border-primary-fixed-dim transition-colors"><input type="checkbox" value="strength" class="hidden goal-cb"/><span class="material-symbols-outlined text-primary-fixed-dim block mb-1">fitness_center</span><span class="font-label-bold text-sm">Strength</span></label>
+          <label class="glass-panel p-3 rounded-lg cursor-pointer hover:border-primary-fixed-dim transition-colors"><input type="checkbox" value="weight_loss" class="hidden goal-cb"/><span class="material-symbols-outlined text-primary-fixed-dim block mb-1">monitor_weight</span><span class="font-label-bold text-sm">Weight Loss</span></label>
+          <label class="glass-panel p-3 rounded-lg cursor-pointer hover:border-primary-fixed-dim transition-colors"><input type="checkbox" value="endurance" class="hidden goal-cb"/><span class="material-symbols-outlined text-primary-fixed-dim block mb-1">directions_run</span><span class="font-label-bold text-sm">Endurance</span></label>
+          <label class="glass-panel p-3 rounded-lg cursor-pointer hover:border-primary-fixed-dim transition-colors"><input type="checkbox" value="hypertrophy" class="hidden goal-cb"/><span class="material-symbols-outlined text-primary-fixed-dim block mb-1">accessibility</span><span class="font-label-bold text-sm">Muscle Gain</span></label>
+        </div>
+        <button onclick="doRegister()" class="w-full bg-primary-container text-on-primary-container font-label-bold py-4 rounded-xl active:scale-95 transition-transform" id="register-btn">Create Account</button>
+        <button onclick="obBack(3)" class="w-full text-on-surface-variant text-sm hover:text-primary transition-colors">← Back</button>
+      </div>
+      <div class="text-center text-on-surface-variant text-sm mt-4">Already a member? <button onclick="showPage('login')" class="text-primary-fixed-dim font-bold hover:underline">Login</button></div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP SHELL (Pages 4-7 share sidebar)
+═══════════════════════════════════════════ -->
+<!-- Dashboard -->
+<div id="page-dashboard" class="page-flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="h-screen w-72 fixed left-0 top-0 z-40 bg-surface-container-low/40 backdrop-blur-2xl border-r border-white/10 flex-col p-gutter hidden md:flex">
+    <div class="flex flex-col gap-2 mb-stack-lg">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container active-indicator"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">fitness_center</span></div>
+        <div><h1 class="font-headline-md text-headline-md text-primary leading-tight">GymFlow AI</h1><p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Elite Performance</p></div>
+      </div>
+    </div>
+    <nav class="flex-1 space-y-2">
+      <button onclick="showPage('dashboard')" id="nav-dashboard" class="sidebar-link active w-full flex items-center gap-4 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(171,214,0,0.2)] font-label-bold text-label-bold transition-all"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">dashboard</span><span>Dashboard</span></button>
+      <button onclick="showPage('workout')" class="sidebar-link w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold text-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">fitness_center</span><span>Workouts</span></button>
+      <button onclick="showPage('nutrition')" class="sidebar-link w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold text-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">psychology</span><span>AI Coach</span></button>
+      <button onclick="showPage('analytics')" class="sidebar-link w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold text-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">insights</span><span>Analytics</span></button>
+    </nav>
+    <div class="mt-auto pt-6 space-y-2">
+      <button onclick="showPage('workout')" class="w-full bg-primary text-on-primary font-label-bold text-label-bold py-4 rounded-xl active:scale-95 transition-transform mb-4">Start Workout</button>
+      <button onclick="doLogout()" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-2 font-label-bold text-label-bold"><span class="material-symbols-outlined">logout</span><span>Logout</span></button>
+    </div>
+  </aside>
+  <!-- Main -->
+  <main class="flex-1 md:ml-72 min-h-screen">
+    <header class="w-full sticky top-0 z-50 bg-surface/30 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-container-padding py-4">
+      <div><p class="text-on-surface-variant font-label-bold text-label-bold uppercase tracking-widest text-xs">Welcome back</p><h2 class="font-headline-md text-headline-md text-primary" id="dash-name">Athlete</h2></div>
+      <div class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications</span><span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">settings</span></div>
+    </header>
+    <div class="p-container-padding space-y-stack-lg">
+      <!-- Stats Row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Total Workouts</p><p class="font-data-mono text-data-mono text-primary-fixed-dim" id="stat-workouts">—</p></div>
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Volume (kg)</p><p class="font-data-mono text-data-mono text-secondary-fixed-dim" id="stat-volume">—</p></div>
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Personal Records</p><p class="font-data-mono text-data-mono text-primary-fixed-dim" id="stat-prs">—</p></div>
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Day Streak</p><p class="font-data-mono text-data-mono text-secondary-fixed-dim" id="stat-streak">—</p></div>
+      </div>
+      <!-- Quick Actions -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+        <div class="glass-panel p-stack-lg rounded-xl cursor-pointer hover:border-primary-fixed-dim transition-colors" onclick="showPage('workout')">
+          <span class="material-symbols-outlined text-primary-fixed-dim mb-4" style="font-size:32px">fitness_center</span>
+          <h3 class="font-headline-md text-headline-md text-primary mb-2">Browse Workouts</h3>
+          <p class="text-on-surface-variant text-sm">Explore your personalized workout library.</p>
+        </div>
+        <div class="glass-panel p-stack-lg rounded-xl cursor-pointer hover:border-secondary-fixed-dim transition-colors" onclick="showPage('analytics')">
+          <span class="material-symbols-outlined text-secondary-fixed-dim mb-4" style="font-size:32px">insights</span>
+          <h3 class="font-headline-md text-headline-md text-primary mb-2">View Analytics</h3>
+          <p class="text-on-surface-variant text-sm">Deep dive into your performance data.</p>
+        </div>
+      </div>
+      <!-- API Status -->
+      <div class="glass-panel p-stack-md rounded-xl flex items-center gap-4">
+        <div class="w-3 h-3 rounded-full bg-primary-container shadow-[0_0_10px_rgba(195,244,0,0.8)]" id="api-status-dot"></div>
+        <div><p class="font-label-bold text-label-bold text-primary">Backend Connected</p><p class="text-on-surface-variant text-xs" id="api-status-text">Checking API health...</p></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Workout Page -->
+<div id="page-workout" class="page-flex min-h-screen">
+  <aside class="h-screen w-72 fixed left-0 top-0 z-40 bg-surface-container-low/40 backdrop-blur-2xl border-r border-white/10 flex-col p-gutter hidden md:flex">
+    <div class="flex items-center gap-3 mb-stack-lg"><div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">fitness_center</span></div><div><h1 class="font-headline-md text-headline-md text-primary">GymFlow AI</h1><p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Elite Performance</p></div></div>
+    <nav class="flex-1 space-y-2">
+      <button onclick="showPage('dashboard')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></button>
+      <button onclick="showPage('workout')" class="w-full flex items-center gap-4 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(171,214,0,0.2)] font-label-bold"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">fitness_center</span><span>Workouts</span></button>
+      <button onclick="showPage('nutrition')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">psychology</span><span>AI Coach</span></button>
+      <button onclick="showPage('analytics')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">insights</span><span>Analytics</span></button>
+    </nav>
+    <button onclick="doLogout()" class="mt-auto flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-2 font-label-bold"><span class="material-symbols-outlined">logout</span><span>Logout</span></button>
+  </aside>
+  <main class="flex-1 md:ml-72 min-h-screen">
+    <header class="w-full sticky top-0 z-50 bg-surface/30 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-container-padding py-4">
+      <h2 class="font-headline-md text-headline-md text-primary">Workout Library</h2>
+      <div class="flex items-center gap-3"><input id="exercise-search" placeholder="Search exercises..." class="bg-white/5 border border-white/10 rounded-full px-gutter py-2 text-sm outline-none focus:ring-2 focus:ring-primary-fixed-dim" oninput="searchExercises()"/></div>
+    </header>
+    <div class="p-container-padding space-y-stack-lg">
+      <div class="flex gap-3 flex-wrap">
+        <button onclick="filterCategory('')" class="category-btn active px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-bold text-xs">ALL</button>
+        <button onclick="filterCategory('strength')" class="category-btn px-4 py-2 rounded-full glass-panel text-on-surface-variant font-label-bold text-xs hover:text-primary">STRENGTH</button>
+        <button onclick="filterCategory('cardio')" class="category-btn px-4 py-2 rounded-full glass-panel text-on-surface-variant font-label-bold text-xs hover:text-primary">CARDIO</button>
+        <button onclick="filterCategory('flexibility')" class="category-btn px-4 py-2 rounded-full glass-panel text-on-surface-variant font-label-bold text-xs hover:text-primary">FLEXIBILITY</button>
+      </div>
+      <div id="exercise-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+        <div class="glass-panel p-stack-md rounded-xl text-center text-on-surface-variant">Loading exercises...</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- AI Coach / Nutrition -->
+<div id="page-nutrition" class="page-flex min-h-screen">
+  <aside class="h-screen w-72 fixed left-0 top-0 z-40 bg-surface-container-low/40 backdrop-blur-2xl border-r border-white/10 flex-col p-gutter hidden md:flex">
+    <div class="flex items-center gap-3 mb-stack-lg"><div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">fitness_center</span></div><div><h1 class="font-headline-md text-headline-md text-primary">GymFlow AI</h1><p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Elite Performance</p></div></div>
+    <nav class="flex-1 space-y-2">
+      <button onclick="showPage('dashboard')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></button>
+      <button onclick="showPage('workout')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">fitness_center</span><span>Workouts</span></button>
+      <button onclick="showPage('nutrition')" class="w-full flex items-center gap-4 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(171,214,0,0.2)] font-label-bold"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">psychology</span><span>AI Coach</span></button>
+      <button onclick="showPage('analytics')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">insights</span><span>Analytics</span></button>
+    </nav>
+    <button onclick="doLogout()" class="mt-auto flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-2 font-label-bold"><span class="material-symbols-outlined">logout</span><span>Logout</span></button>
+  </aside>
+  <main class="flex-1 md:ml-72 min-h-screen flex flex-col">
+    <header class="w-full sticky top-0 z-50 bg-surface/30 backdrop-blur-xl border-b border-white/10 flex items-center px-container-padding py-4 gap-3">
+      <span class="material-symbols-outlined text-primary-fixed-dim">psychology</span>
+      <h2 class="font-headline-md text-headline-md text-primary">AI Coach</h2>
+      <span class="ml-auto text-xs text-on-surface-variant font-label-bold glass-panel px-3 py-1 rounded-full">Pro Feature</span>
+    </header>
+    <div class="flex-1 flex flex-col p-container-padding gap-stack-md">
+      <div class="flex-1 glass-panel rounded-xl p-stack-md overflow-y-auto space-y-3 min-h-[400px]" id="chat-messages">
+        <div class="flex gap-3"><div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container flex-shrink-0"><span class="material-symbols-outlined text-sm" style="font-size:16px">psychology</span></div><div class="glass-panel p-3 rounded-xl max-w-md"><p class="text-sm text-on-surface">Hello! I'm your AI fitness coach. Ask me anything about training, nutrition, or recovery. <span class="text-on-surface-variant text-xs">(Requires Pro subscription)</span></p></div></div>
+      </div>
+      <div class="flex gap-3">
+        <input id="chat-input" placeholder="Ask your AI coach..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-gutter py-3 text-sm outline-none focus:ring-2 focus:ring-primary-fixed-dim placeholder:text-white/20" onkeydown="if(event.key==='Enter')sendChat()"/>
+        <button onclick="sendChat()" class="bg-primary-container text-on-primary-container px-6 py-3 rounded-xl font-label-bold text-sm active:scale-95 transition-transform">Send</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Analytics -->
+<div id="page-analytics" class="page-flex min-h-screen">
+  <aside class="h-screen w-72 fixed left-0 top-0 z-40 bg-surface-container-low/40 backdrop-blur-2xl border-r border-white/10 flex-col p-gutter hidden md:flex">
+    <div class="flex items-center gap-3 mb-stack-lg"><div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">fitness_center</span></div><div><h1 class="font-headline-md text-headline-md text-primary">GymFlow AI</h1><p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Elite Performance</p></div></div>
+    <nav class="flex-1 space-y-2">
+      <button onclick="showPage('dashboard')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></button>
+      <button onclick="showPage('workout')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">fitness_center</span><span>Workouts</span></button>
+      <button onclick="showPage('nutrition')" class="w-full flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-3 font-label-bold hover:bg-white/5 hover:translate-x-1 transition-all rounded-lg"><span class="material-symbols-outlined">psychology</span><span>AI Coach</span></button>
+      <button onclick="showPage('analytics')" class="w-full flex items-center gap-4 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 shadow-[0_0_15px_rgba(171,214,0,0.2)] font-label-bold"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">insights</span><span>Analytics</span></button>
+    </nav>
+    <button onclick="doLogout()" class="mt-auto flex items-center gap-4 text-on-surface-variant hover:text-primary px-4 py-2 font-label-bold"><span class="material-symbols-outlined">logout</span><span>Logout</span></button>
+  </aside>
+  <main class="flex-1 md:ml-72 min-h-screen">
+    <header class="w-full sticky top-0 z-50 bg-surface/30 backdrop-blur-xl border-b border-white/10 flex items-center px-container-padding py-4">
+      <h2 class="font-headline-md text-headline-md text-primary">Performance Analytics</h2>
+    </header>
+    <div class="p-container-padding space-y-stack-lg">
+      <!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Sessions</p><p class="font-data-mono text-data-mono text-primary-fixed-dim" id="an-sessions">—</p></div>
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Volume (kg)</p><p class="font-data-mono text-data-mono text-secondary-fixed-dim" id="an-volume">—</p></div>
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Records</p><p class="font-data-mono text-data-mono text-primary-fixed-dim" id="an-prs">—</p></div>
+        <div class="glass-panel p-stack-md rounded-xl"><p class="text-on-surface-variant text-xs uppercase tracking-widest font-label-bold mb-2">Streak</p><p class="font-data-mono text-data-mono text-secondary-fixed-dim" id="an-streak">—</p></div>
+      </div>
+      <!-- Mock Chart -->
+      <div class="glass-panel p-stack-lg rounded-xl">
+        <div class="flex justify-between items-center mb-stack-lg">
+          <div class="font-headline-md text-headline-md text-primary">Performance Delta</div>
+          <div class="text-primary-fixed-dim font-data-mono">+24.8%</div>
+        </div>
+        <div class="h-48 flex items-end gap-2">
+          <div class="flex-1 bg-white/5 rounded-t-sm hover:bg-primary-container/40 transition-all duration-500" style="height:40%"></div>
+          <div class="flex-1 bg-white/5 rounded-t-sm hover:bg-primary-container/40 transition-all duration-500" style="height:55%"></div>
+          <div class="flex-1 bg-white/5 rounded-t-sm hover:bg-primary-container/40 transition-all duration-500" style="height:45%"></div>
+          <div class="flex-1 bg-white/5 rounded-t-sm hover:bg-primary-container/40 transition-all duration-500" style="height:70%"></div>
+          <div class="flex-1 bg-white/5 rounded-t-sm hover:bg-primary-container/40 transition-all duration-500" style="height:85%"></div>
+          <div class="flex-1 bg-primary-container rounded-t-sm shadow-[0_0_20px_rgba(171,214,0,0.3)]" style="height:95%"></div>
+        </div>
+        <div class="flex justify-between mt-3 font-label-bold text-[10px] text-on-surface-variant uppercase tracking-widest"><span>WK 01</span><span>WK 04</span><span>WK 08</span><span>WK 12</span></div>
+      </div>
+      <!-- Recent Sessions -->
+      <div class="glass-panel p-stack-lg rounded-xl">
+        <h3 class="font-headline-md text-headline-md text-primary mb-stack-md">Recent Sessions</h3>
+        <div id="recent-sessions" class="space-y-3"><div class="text-on-surface-variant text-sm">Loading sessions...</div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── CONFIG ──
+const API_URL = 'https://gymflow-api-c6ij.onrender.com';
+let accessToken = localStorage.getItem('gymflow_token');
+let currentUser = JSON.parse(localStorage.getItem('gymflow_user') || 'null');
+
+// ── PAGE ROUTING ──
+function showPage(name) {
+  document.querySelectorAll('.page, .page-flex').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + name);
+  if (el) el.classList.add('active');
+
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'workout') loadExercises();
+  if (name === 'analytics') loadAnalytics();
+}
+
+// ── TOAST ──
+function toast(msg, color='text-primary') {
+  const t = document.getElementById('toast');
+  t.className = `glass-panel px-6 py-3 rounded-full text-sm font-label-bold show ${color}`;
+  t.textContent = msg;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── AUTH ──
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-password').value;
+  if (!email || !pass) return toast('Please fill in all fields', 'text-error');
+  try {
+    const r = await fetch(`${API_URL}/api/v1/auth/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, password: pass})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Login failed');
+    accessToken = d.accessToken;
+    currentUser = d.user;
+    localStorage.setItem('gymflow_token', accessToken);
+    localStorage.setItem('gymflow_user', JSON.stringify(currentUser));
+    toast('Welcome back, ' + d.user.first_name + '!');
+    showPage('dashboard');
+  } catch(e) { toast(e.message, 'text-error'); }
+}
+
+// Onboarding steps
+let obData = {};
+function obNext(step) {
+  if (step === 1) {
+    obData.first_name = document.getElementById('reg-first').value;
+    obData.last_name = document.getElementById('reg-last').value;
+    obData.email = document.getElementById('reg-email').value;
+    if (!obData.first_name || !obData.email) return toast('Please fill required fields', 'text-error');
+    document.getElementById('ob-step-1').classList.add('hidden');
+    document.getElementById('ob-step-2').classList.remove('hidden');
+    document.getElementById('step-count').textContent = 'Step 2 of 3';
+    document.getElementById('step-title').textContent = 'Security & Level';
+    document.getElementById('progress-pct').textContent = '66%';
+    document.getElementById('progress-bar').style.width = '66%';
+  } else if (step === 2) {
+    obData.password = document.getElementById('reg-pass').value;
+    obData.fitness_level = document.getElementById('reg-level').value;
+    if (!obData.password || obData.password.length < 8) return toast('Password must be at least 8 characters', 'text-error');
+    document.getElementById('ob-step-2').classList.add('hidden');
+    document.getElementById('ob-step-3').classList.remove('hidden');
+    document.getElementById('step-count').textContent = 'Step 3 of 3';
+    document.getElementById('step-title').textContent = 'Your Goals';
+    document.getElementById('progress-pct').textContent = '100%';
+    document.getElementById('progress-bar').style.width = '100%';
+  }
+}
+function obBack(step) {
+  if (step === 2) {
+    document.getElementById('ob-step-2').classList.add('hidden');
+    document.getElementById('ob-step-1').classList.remove('hidden');
+    document.getElementById('step-count').textContent = 'Step 1 of 3';
+    document.getElementById('step-title').textContent = 'Personal Details';
+    document.getElementById('progress-pct').textContent = '33%';
+    document.getElementById('progress-bar').style.width = '33%';
+  } else if (step === 3) {
+    document.getElementById('ob-step-3').classList.add('hidden');
+    document.getElementById('ob-step-2').classList.remove('hidden');
+    document.getElementById('step-count').textContent = 'Step 2 of 3';
+    document.getElementById('step-title').textContent = 'Security & Level';
+    document.getElementById('progress-pct').textContent = '66%';
+    document.getElementById('progress-bar').style.width = '66%';
+  }
+}
+
+// Visual toggle for goal checkboxes
+document.querySelectorAll('.goal-cb').forEach(cb => {
+  cb.parentElement.addEventListener('click', function() {
+    cb.checked = !cb.checked;
+    this.classList.toggle('border-primary-fixed-dim', cb.checked);
+    this.querySelector('span.material-symbols-outlined').style.color = cb.checked ? '' : '';
+  });
+});
+
+async function doRegister() {
+  const goals = [...document.querySelectorAll('.goal-cb:checked')].map(cb => cb.value);
+  const btn = document.getElementById('register-btn');
+  btn.textContent = 'Creating...';
+  btn.disabled = true;
+  try {
+    const r = await fetch(`${API_URL}/api/v1/auth/register`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({...obData, username: obData.email.split('@')[0], fitness_goals: goals})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || d.errors?.[0]?.msg || 'Registration failed');
+    accessToken = d.accessToken;
+    currentUser = d.user;
+    localStorage.setItem('gymflow_token', accessToken);
+    localStorage.setItem('gymflow_user', JSON.stringify(currentUser));
+    toast('Welcome to GymFlow AI, ' + d.user.first_name + '!');
+    showPage('dashboard');
+  } catch(e) {
+    toast(e.message, 'text-error');
+    btn.textContent = 'Create Account';
+    btn.disabled = false;
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem('gymflow_token');
+  localStorage.removeItem('gymflow_user');
+  accessToken = null; currentUser = null;
+  toast('Logged out');
+  showPage('landing');
+}
+
+// ── DASHBOARD ──
+async function loadDashboard() {
+  if (currentUser) document.getElementById('dash-name').textContent = currentUser.first_name || 'Athlete';
+
+  // Check API health
+  try {
+    const r = await fetch(`${API_URL}/health`);
+    const d = await r.json();
+    document.getElementById('api-status-text').textContent = `API ${d.status} · ${d.environment}`;
+  } catch(e) {
+    document.getElementById('api-status-dot').className = 'w-3 h-3 rounded-full bg-error shadow-[0_0_10px_rgba(255,180,171,0.8)]';
+    document.getElementById('api-status-text').textContent = 'API offline (wake-up may take 30s)';
+  }
+
+  // Load analytics if logged in
+  if (accessToken) {
+    try {
+      const r = await fetch(`${API_URL}/api/v1/analytics/dashboard`, {headers:{'Authorization':'Bearer '+accessToken}});
+      if (r.ok) {
+        const d = await r.json();
+        document.getElementById('stat-workouts').textContent = d.total_sessions ?? '0';
+        document.getElementById('stat-volume').textContent = Math.round(d.total_volume_kg ?? 0).toLocaleString();
+        document.getElementById('stat-prs').textContent = d.total_prs ?? '0';
+        document.getElementById('stat-streak').textContent = (d.current_streak ?? '0') + ' days';
+      }
+    } catch(e) {}
+  } else {
+    ['stat-workouts','stat-volume','stat-prs','stat-streak'].forEach(id => document.getElementById(id).textContent = 'Login');
+  }
+}
+
+// ── EXERCISES ──
+let allExercises = [];
+async function loadExercises() {
+  try {
+    const r = await fetch(`${API_URL}/api/v1/exercises?limit=20`);
+    const d = await r.json();
+    allExercises = d.exercises || [];
+    renderExercises(allExercises);
+  } catch(e) {
+    document.getElementById('exercise-grid').innerHTML = '<div class="glass-panel p-stack-md rounded-xl text-on-surface-variant col-span-3">Could not load exercises. API may be waking up (30s wait).</div>';
+  }
+}
+
+function renderExercises(list) {
+  const grid = document.getElementById('exercise-grid');
+  if (!list.length) { grid.innerHTML = '<div class="glass-panel p-stack-md rounded-xl text-on-surface-variant">No exercises found.</div>'; return; }
+  grid.innerHTML = list.map(ex => `
+    <div class="glass-panel p-stack-md rounded-xl hover:border-primary-fixed-dim transition-colors cursor-pointer">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="material-symbols-outlined text-primary-fixed-dim">${ex.category === 'strength' ? 'fitness_center' : ex.category === 'cardio' ? 'directions_run' : 'accessibility'}</span>
+        <span class="font-label-bold text-xs text-on-surface-variant uppercase tracking-widest">${ex.category || 'exercise'}</span>
+      </div>
+      <h3 class="font-headline-md text-sm text-primary mb-1">${ex.name}</h3>
+      <p class="text-on-surface-variant text-xs">${ex.difficulty || ''} ${ex.muscle_groups_primary?.join(', ') || ''}</p>
+    </div>`).join('');
+}
+
+function searchExercises() {
+  const q = document.getElementById('exercise-search').value.toLowerCase();
+  renderExercises(q ? allExercises.filter(e => e.name?.toLowerCase().includes(q)) : allExercises);
+}
+
+function filterCategory(cat) {
+  document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('bg-primary-container','text-on-primary-container'));
+  event.target.classList.add('bg-primary-container','text-on-primary-container');
+  renderExercises(cat ? allExercises.filter(e => e.category === cat) : allExercises);
+}
+
+// ── AI CHAT (stub) ──
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML += `<div class="flex gap-3 justify-end"><div class="glass-panel p-3 rounded-xl max-w-md"><p class="text-sm text-on-surface">${msg}</p></div></div>`;
+  input.value = '';
+  setTimeout(() => {
+    msgs.innerHTML += `<div class="flex gap-3"><div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container flex-shrink-0"><span class="material-symbols-outlined text-sm" style="font-size:16px">psychology</span></div><div class="glass-panel p-3 rounded-xl max-w-md"><p class="text-sm text-on-surface">AI coaching requires a Pro subscription. Upgrade to unlock personalized AI recommendations, workout generation, and nutrition planning.</p></div></div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 800);
+}
+
+// ── ANALYTICS ──
+async function loadAnalytics() {
+  if (!accessToken) {
+    ['an-sessions','an-volume','an-prs','an-streak'].forEach(id => document.getElementById(id).textContent = 'Login');
+    document.getElementById('recent-sessions').innerHTML = '<p class="text-on-surface-variant text-sm">Please login to view your analytics.</p>';
+    return;
+  }
+  try {
+    const r = await fetch(`${API_URL}/api/v1/analytics/dashboard`, {headers:{'Authorization':'Bearer '+accessToken}});
+    if (r.ok) {
+      const d = await r.json();
+      document.getElementById('an-sessions').textContent = d.total_sessions ?? '0';
+      document.getElementById('an-volume').textContent = Math.round(d.total_volume_kg ?? 0).toLocaleString();
+      document.getElementById('an-prs').textContent = d.total_prs ?? '0';
+      document.getElementById('an-streak').textContent = (d.current_streak ?? '0') + 'd';
+      const sessions = d.recent_sessions || [];
+      document.getElementById('recent-sessions').innerHTML = sessions.length
+        ? sessions.map(s => `<div class="flex justify-between items-center glass-panel p-3 rounded-lg"><div><p class="font-label-bold text-sm text-primary">${s.name || 'Session'}</p><p class="text-xs text-on-surface-variant">${new Date(s.completed_at||s.started_at).toLocaleDateString()}</p></div><div class="text-right"><p class="font-data-mono text-sm text-primary-fixed-dim">${s.duration_seconds ? Math.round(s.duration_seconds/60)+'min' : ''}</p></div></div>`).join('')
+        : '<p class="text-on-surface-variant text-sm">No sessions yet. Start your first workout!</p>';
+    }
+  } catch(e) {}
+}
+
+// ── INIT ──
+if (accessToken && currentUser) {
+  showPage('dashboard');
+} else {
+  showPage('landing');
+}
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Created. Size: $(wc -c < /home/claude/gymflow-frontend/index.html) bytes"
